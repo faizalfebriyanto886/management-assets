@@ -83,7 +83,7 @@ class CustomTextFieldBase extends StatelessWidget {
         ),
         prefixIconConstraints: const BoxConstraints(minWidth: 20, maxWidth: 50),
         hintText: hintText,
-        hintStyle: AppFontStyle.bodyMedium(context, color: primaryLight),
+        hintStyle: AppFontStyle.bodyMedium(context, color: primaryDark),
         suffixIcon: suffixWidget,
         prefixIcon: prefix != null 
           ? Padding(

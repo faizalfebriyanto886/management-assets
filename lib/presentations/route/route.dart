@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:management_asset/presentations/page/home/view/home_page.dart';
 import 'package:management_asset/presentations/page/login/view/login_view.dart';
 import 'package:management_asset/presentations/page/navbar/view/navbar_view.dart';
 import 'package:management_asset/presentations/page/splash/view/splash_view.dart';
@@ -17,6 +18,11 @@ class GetXroutes {
     GetPage(
       name: SplashView.routeName,
       page: () => const SplashView(),
+    ),
+    GetPage(
+      name: HomePage.routeName,
+      page: () => const HomePage(),
+      binding: HomeBindings()
     ),
   ];
 }

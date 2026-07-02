@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:management_asset/presentations/page/navbar/controller/navbar_controller.dart';
+import 'package:management_asset/presentations/theme/colors_style_theme.dart';
 
 class NavbarBindings implements Bindings {
   @override
@@ -44,25 +45,25 @@ class NavbarView extends GetView<NavbarController> {
                     onTap: () {
                       controller.changeSelectedNavBar(0);
                     },
-                    child: Image.asset("assets/icons/home.png", width: 28, height: 28, color: Colors.white,)
+                    child: Image.asset("assets/icons/home.png", width: 28, height: 28, color: controller.selectedNavbar.value == 0 ? primaryLight : Colors.white,)
                   ),
                   GestureDetector(
                     onTap: () {
                       controller.changeSelectedNavBar(1);
                     },
-                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: Colors.white)
+                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: controller.selectedNavbar.value == 1 ? primaryLight : Colors.white)
                   ),
                   GestureDetector(
                     onTap: () {
                       controller.changeSelectedNavBar(2);
                     },
-                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: Colors.white)
+                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: controller.selectedNavbar.value == 2 ? primaryLight : Colors.white)
                   ),
                   GestureDetector(
                     onTap: () {
                       controller.changeSelectedNavBar(3);
                     },
-                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: Colors.white)
+                    child: Image.asset("assets/icons/calendar.png", width: 28, height: 28, color: controller.selectedNavbar.value == 3 ? primaryLight : Colors.white)
                   ),
                 ],
               ),
