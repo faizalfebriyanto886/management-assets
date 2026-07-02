@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:management_asset/presentations/page/detail_asset/view/detail_asset_view.dart';
 import 'package:management_asset/presentations/page/home/view/home_page.dart';
 import 'package:management_asset/presentations/page/login/view/login_view.dart';
 import 'package:management_asset/presentations/page/navbar/view/navbar_view.dart';
@@ -23,6 +24,11 @@ class GetXroutes {
       name: HomePage.routeName,
       page: () => const HomePage(),
       binding: HomeBindings()
+    ),
+    GetPage(
+      name: DetailAssetView.routeName,
+      page: () => const DetailAssetView(),
+      binding: DetailAssetBindings()
     ),
   ];
 }

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:management_asset/presentations/page/detail_asset/view/detail_asset_view.dart';
 import 'package:management_asset/presentations/page/home/controller/home_controller.dart';
 import 'package:management_asset/presentations/reusable_widget/custom_text_field.dart';
 import 'package:management_asset/presentations/theme/colors_style_theme.dart';
@@ -22,89 +24,186 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(140), 
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 70, 15, 15),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              stops: [
-                0.0, 
-                1.0
-              ],
-              colors: [
-                primary, 
-                primaryLight
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            )
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 80,
+        elevation: 0,
+        backgroundColor: primary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
+        ),
+        title: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                image: const DecorationImage(
+                  image: AssetImage("assets/images/student.png"),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Selamat Datang",
+                  style: AppFontStyle.bodyMedium(
+                    context,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "John Doe",
+                  style: AppFontStyle.bodyLarge(
+                    context,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(70),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 40,
+                  width: Get.width * 0.78,
+                  child: CustomTextFieldBase(
+                    customRadius: 40,
+                    color: Colors.white,
+                    hintText: "Cari asset...",
+                    prefix: Icon(
+                      Icons.search,
+                      color: primaryDark,
+                    ),
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    // Handle filter button tap
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: primaryDark),
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/student.png"),
-                        fit: BoxFit.contain,
-                      ),
                     ),
+                    child: Icon(
+                        Iconsax.filter_add,
+                        color: primaryDark,
+                      ),
                   ),
-                  SizedBox(width: 10),
-                  Column(
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: ListView.separated(
+        padding: EdgeInsets.all(15),
+        itemCount: 10,
+        separatorBuilder: (context, index) => SizedBox(height: 15),
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Get.toNamed(DetailAssetView.routeName);
+            },
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text("Selamat Datang", style: AppFontStyle.bodyMedium(context, color: Colors.white)),
-                      Text("John Doe", style: AppFontStyle.bodyLarge(context, color: Colors.white, fontWeight: FontWeight.bold)),
+                      Container(
+                        height: 55,
+                        width: 55,
+                        // padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/received.png"),
+                            fit: BoxFit.cover,
+                          ), 
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          spacing: 10,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Lenovo ThinkPad X1 Carbon",
+                              style: AppFontStyle.bodyMedium(
+                                context,
+                                color: black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "Kategori : Elektronik",
+                              style: AppFontStyle.bodySmall(
+                                context,
+                                color: black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: primaryExtraLight,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Tersedia",
+                            style: AppFontStyle.bodySmall(
+                              context,
+                              color: primaryDark,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   )
                 ],
               ),
-              SizedBox(height: 20),
-              SizedBox(
-                height: 40,
-                child: CustomTextFieldBase(
-                  customRadius: 40,
-                  color: Colors.white, 
-                  hintText: "Cari asset...",
-                  prefix: Icon(Icons.search, color: primaryDark),
-                ),
-              )
-            ],
-          ),
-        )
-      ),
-      body: ListView.separated(
-        padding: EdgeInsets.all(15),
-        itemCount: 1,
-        separatorBuilder: (context, index) => SizedBox(height: 15),
-        itemBuilder: (context, index) {
-          return Container(
-            height: 150,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: Offset(0, 5),
-                ),
-              ],
             ),
-            child: Column(),
           );
         }, 
       ),
