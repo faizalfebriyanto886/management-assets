@@ -19,4 +19,19 @@ class FirestoreClient {
     }
   }
 
+  Future<Either<L, R>> updateDocument<L, R>({
+    required String collection,
+    required String documentId,
+    required Map<String, dynamic> data,
+    required R Function() onSuccess,
+    required L Function(FirebaseException) onFailure,
+  }) async {
+    try {
+      await firestore.collection(collection).doc(documentId).update(data);
+
+      return right(onSuccess());
+    } on FirebaseException catch (e) {
+      return left(onFailure(e));
+    }
+  }
 }

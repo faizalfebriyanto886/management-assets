@@ -1,24 +1,43 @@
-// ignore_for_file: invalid_annotation_target
+import 'dart:convert';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-part 'assets_success_model.freezed.dart';
-part 'assets_success_model.g.dart';
+class AssetsSuccessModel {
+    final String? id;
+    final String? category;
+    final Timestamp? createAt;
+    final String? name;
+    final String? status;
+    final Timestamp? updateAt;
 
-@freezed
-abstract class AssetsSuccessModel with _$AssetsSuccessModel {
-    const factory AssetsSuccessModel({
-        @JsonKey(name: "category")
-        String? category,
-        @JsonKey(name: "create_at")
-        DateTime? createAt,
-        @JsonKey(name: "name")
-        String? name,
-        @JsonKey(name: "status")
-        String? status,
-        @JsonKey(name: "update_at")
-        DateTime? updateAt,
-    }) = _AssetsSuccessModel;
+    AssetsSuccessModel({
+        this.id,
+        this.category,
+        this.createAt,
+        this.name,
+        this.status,
+        this.updateAt,
+    });
 
-    factory AssetsSuccessModel.fromJson(Map<String, dynamic> json) => _$AssetsSuccessModelFromJson(json);
+    factory AssetsSuccessModel.fromRawJson(String str) => AssetsSuccessModel.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory AssetsSuccessModel.fromJson(Map<String, dynamic> json) => AssetsSuccessModel(
+        id: json['id'],
+        category: json["category"],
+        createAt: json["create_at"],
+        name: json["name"],
+        status: json["status"],
+        updateAt: json["update_at"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "category": category,
+        "create_at": createAt,
+        "name": name,
+        "status": status,
+        "update_at": updateAt,
+    };
 }

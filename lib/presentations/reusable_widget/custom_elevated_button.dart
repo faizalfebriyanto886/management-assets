@@ -9,9 +9,11 @@ class CustomElevatedButton extends StatelessWidget {
   final Color fontColor;
   final Color fillColor;
   final FontWeight fontWeight;
-  final void Function()? onTap;
+  final bool isLoading;
+  final VoidCallback? onTap;
 
   const CustomElevatedButton({
+    super.key,
     required this.height,
     required this.width,
     required this.title,
@@ -19,23 +21,37 @@ class CustomElevatedButton extends StatelessWidget {
     this.fontColor = Colors.white,
     this.fillColor = const Color(0XFF389BE5),
     this.fontWeight = FontWeight.w500,
+    this.isLoading = false,
     this.onTap,
-    super.key
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
+      onTap: isLoading ? null : onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         height: height,
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(80),
-          color: fillColor
+          color: isLoading ? fillColor.withValues(alpha: 0.7) : fillColor,
         ),
-        child: Text(title, style: GoogleFonts.openSans(fontSize: fontSize, color: fontColor, fontWeight: fontWeight),),
+        child: isLoading
+        ? SizedBox(
+          width: 22,
+          height: 22,
+          child: CircularProgressIndicator(color: Colors.white,),
+        )
+        : Text(
+          title,
+          style: GoogleFonts.openSans(
+            fontSize: fontSize,
+            color: fontColor,
+            fontWeight: fontWeight,
+          ),
+        ),
       ),
     );
   }
@@ -145,9 +161,11 @@ class CustomElevatedButtonOutline extends StatelessWidget {
   final Color fontColor;
   final Color fillColor;
   final FontWeight fontWeight;
-  final void Function()? onTap;
+  final bool isLoading;
+  final VoidCallback? onTap;
 
   const CustomElevatedButtonOutline({
+    super.key,
     required this.height,
     required this.width,
     required this.title,
@@ -156,24 +174,44 @@ class CustomElevatedButtonOutline extends StatelessWidget {
     this.fontColor = Colors.black,
     this.fillColor = Colors.white,
     this.fontWeight = FontWeight.w500,
+    this.isLoading = false,
     this.onTap,
-    super.key
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
+      onTap: isLoading ? null : onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         height: height,
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(80),
-          border: Border.all(color: outlineColor, width: 1.5),
-          color: fillColor
+          border: Border.all(
+            color: outlineColor,
+            width: 1.5,
+          ),
+          color: isLoading ? fillColor.withValues(alpha: 0.7) : fillColor,
         ),
-        child: Text(title, style: GoogleFonts.openSans(fontSize: fontSize, color: fontColor, fontWeight: fontWeight),),
+        child: isLoading
+        ? SizedBox(
+          width: 22,
+          height: 22,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.5,
+            color: outlineColor,
+          ),
+        )
+        : Text(
+          title,
+          style: GoogleFonts.openSans(
+            fontSize: fontSize,
+            color: fontColor,
+            fontWeight: fontWeight,
+          ),
+        ),
       ),
     );
   }

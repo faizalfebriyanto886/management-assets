@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "502231771588",
+    "project_id": "management-assets-cbf92",
+    "storage_bucket": "management-assets-cbf92.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502231771588:android:c9c82da53466cd182c1c91",
+        "android_client_info": {
+          "package_name": "com.example.management_asset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2yYpNZk0jiN_p65FhiHcdQxaQclFm0jI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

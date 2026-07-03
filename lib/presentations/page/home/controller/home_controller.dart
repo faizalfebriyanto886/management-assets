@@ -1,46 +1,135 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:management_asset/presentations/reusable_widget/custom_snackbar_widget.dart';
+import 'package:management_asset/presentations/theme/colors_style_theme.dart';
+import 'package:management_asset/services/model/success/assets/assets_success_model.dart';
+import 'package:management_asset/services/respository/assets_repositories.dart';
 
-class HomeController extends GetxController { 
-  List<Asset> listAssets = [
-    Asset(id: 0, name: "Lenovo ThinkPad X1 Carbon", category: "Dekstop", image: "assets/images/received.png", status: AssetStatus.available),
-    Asset(id: 1, name: "Dell XPS 13", category: "Dekstop", image: "assets/images/received.png", status: AssetStatus.maintenance),
-    Asset(id: 2, name: "MacBook Pro", category: "Dekstop", image: "assets/images/received.png", status: AssetStatus.available),
-    Asset(id: 3, name: "HP Spectre x360", category: "Dekstop", image: "assets/images/received.png", status: AssetStatus.available),
-    Asset(id: 4, name: "Surface Laptop", category: "Dekstop", image: "assets/images/received.png", status: AssetStatus.available),
-    Asset(id: 5, name: "Canon L110", category: "Elektronik", image: "assets/images/received.png", status: AssetStatus.available),
-    Asset(id: 6, name: "Gamen titan 3", category: "Elektronik", image: "assets/images/received.png", status: AssetStatus.available),
+class HomeController extends GetxController  {
+  @override
+  void onInit() {
+    getAssets();
+    super.onInit();
+  }
 
-  ];
+  List<AssetsSuccessModel> allAssets = [];
 
-  RxList<Asset> selectedAsset = <Asset>[].obs;
+  final RxList<AssetsSuccessModel> listAssets = <AssetsSuccessModel>[].obs;
 
-  setSelectedAsset(Asset asset, int index) {
-    if (!selectedAsset.contains(asset)) {
-      selectedAsset.add(asset);
+  RxBool isLoadingUpdate = false.obs;
+  RxString selectedStatus = "Semua".obs;
+
+  final searchController = TextEditingController();
+
+  colorStatus({required String status}) {
+    if (status == "Tersedia") {
+      return greenPrimary;
+    } else if (status == "Maintenance") {
+      return redPrimary;
     } else {
-      selectedAsset.remove(asset);
+      return primaryExtraLight;
     }
   }
-}
 
-class Asset {
-  final int id;
-  final String name;
-  final String category;
-  final String image;
-  AssetStatus status;
+  colorStatusText({required String status}) {
+    if (status == "Tersedia") {
+      return greenDark;
+    } else if (status == "Maintenance") {
+      return Colors.white;
+    } else {
+      return primaryDark;
+    }
+  }
 
-  Asset({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.image,
-    required this.status,
-  });
-}
+  // void filterStatus(String status) {
+  //   selectedStatus.value = status;
 
-enum AssetStatus {
-  available,
-  borrowed,
-  maintenance,
+  //   if (status == "Semua") {
+  //     listAssets.assignAll(allAssets);
+  //     return;
+  //   }
+
+  //   listAssets.assignAll(
+  //     allAssets.where((e) => e.status == status).toList(),
+  //   );
+  // }
+
+  void filterStatus(String status) {
+    selectedStatus.value = status;
+    applyFilter();
+  }
+
+  void searchAsset(String value) {
+    applyFilter();
+  }
+
+  void applyFilter() {
+    List<AssetsSuccessModel> filtered = List.from(allAssets);
+
+    if (selectedStatus.value != "Semua") {
+      filtered = filtered.where((e) => e.status == selectedStatus.value).toList();
+    }
+
+    // Search Nama Barang
+    final keyword = searchController.text.trim().toLowerCase();
+
+    if (keyword.isNotEmpty) {
+      filtered = filtered.where((e) {
+        return (e.name ?? "").toLowerCase().contains(keyword);
+      }).toList();
+    }
+
+    listAssets.assignAll(filtered);
+  }
+
+  final AssetRepository assetRepository = AssetRepository();
+
+  Future<void> getAssets() async {
+    final result = await assetRepository.getAssets();
+
+    result.fold(
+      (failure) {
+        CustomSnackbar().showSnackbarError(
+          title: "Oops!",
+          desc: failure,
+        );
+      },
+      (success) {
+        // allAssets = List<AssetsSuccessModel>.from(success);
+
+        listAssets.assignAll(success);
+
+        allAssets = List.from(success);
+        applyFilter();
+
+        update();
+      },
+    );
+  }
+
+  Future<void> updateAsset({required String id, required String status}) async {
+    isLoadingUpdate.value = true;
+    final result = await assetRepository.updateAssetStatus(id: id, status: status);
+
+    result.fold(
+      (failure) {
+        isLoadingUpdate.value = false;
+        CustomSnackbar().showSnackbarError(
+          title: "Oops!",
+          desc: failure,
+        );
+      },
+      (success) async {
+        isLoadingUpdate.value = false;
+        Get.back();
+        CustomSnackbar().showSnackbarSuccess(
+          title: "Success",
+          desc: "Data berhasil diperbarui.",
+          snackPosition: SnackPosition.TOP
+        );
+
+        await getAssets();
+      },
+    );
+  }
 }

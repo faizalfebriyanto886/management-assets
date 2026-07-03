@@ -1,12 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-// import 'package:management_asset/presentations/page/detail_asset/view/detail_asset_view.dart';
 import 'package:management_asset/presentations/page/home/controller/home_controller.dart';
 import 'package:management_asset/presentations/reusable_widget/custom_elevated_button.dart';
 import 'package:management_asset/presentations/reusable_widget/custom_text_field.dart';
@@ -63,7 +59,7 @@ class HomePage extends GetView<HomeController> {
                   ),
                 ),
                 Text(
-                  "John Doe",
+                  "Faizal Febriyanto",
                   style: AppFontStyle.bodyLarge(
                     context,
                     color: Colors.white,
@@ -85,9 +81,11 @@ class HomePage extends GetView<HomeController> {
                   height: 40,
                   width: Get.width * 0.78,
                   child: CustomTextFieldBase(
+                    controller: controller.searchController,
                     customRadius: 40,
                     color: Colors.white,
                     hintText: "Cari asset...",
+                    onchange: controller.searchAsset,
                     prefix: Icon(
                       Icons.search,
                       color: primaryDark,
@@ -96,7 +94,7 @@ class HomePage extends GetView<HomeController> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Handle filter button tap
+                    Get.bottomSheet(SectionFilterStatus());
                   },
                   child: Container(
                     height: 40,
@@ -106,9 +104,9 @@ class HomePage extends GetView<HomeController> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
-                        Iconsax.filter_add,
-                        color: primaryDark,
-                      ),
+                      Iconsax.filter_add,
+                      color: primaryDark,
+                    ),
                   ),
                 ),
               ],
@@ -116,11 +114,118 @@ class HomePage extends GetView<HomeController> {
           ),
         ),
       ),
-      bottomNavigationBar: Obx(
-        () => controller.selectedAsset.isEmpty 
-        ? SizedBox()
-        : Container(
-          height: 80,
+      body: Obx(
+        () => ListView.separated(
+          padding: EdgeInsets.all(15),
+          itemCount: controller.listAssets.length,
+          separatorBuilder: (context, index) => SizedBox(height: 15),
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Get.bottomSheet(SectionUpdateStatus(id: controller.listAssets[index].id ?? "0",));
+              },
+              child: Obx(
+                () => Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 55,
+                            width: 55,
+                            // padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/received.png"),
+                                fit: BoxFit.cover,
+                              ), 
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              spacing: 10,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.listAssets[index].name ?? "",
+                                  style: AppFontStyle.bodyMedium(
+                                    context,
+                                    color: black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "Kategori : ${controller.listAssets[index].category}",
+                                  style: AppFontStyle.bodySmall(
+                                    context,
+                                    color: black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: controller.colorStatus(status: controller.listAssets[index].status ?? ""),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text(
+                                controller.listAssets[index].status ?? "",
+                                style: AppFontStyle.bodySmall(
+                                  context,
+                                  color: controller.colorStatusText(status: controller.listAssets[index].status ?? ""),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }, 
+        ),
+      ),
+    );
+  }
+}
+
+class SectionUpdateStatus extends StatelessWidget {
+  final String id;
+  const SectionUpdateStatus({super.key, required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder(
+      init: HomeController(),
+      builder: (controller) {
+        return Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
@@ -138,131 +243,99 @@ class HomePage extends GetView<HomeController> {
               topRight: Radius.circular(20),
             )
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomElevatedButtonOutline(
-                height: 45,
-                width: Get.width * 0.38, 
-                title: "Kembalikan",
-                fontColor: redPrimary,
-                outlineColor: redPrimary
-              ),
-              CustomElevatedButton(
-                height: 45, 
-                width: Get.width * 0.5, 
-                fillColor: primary,
-                title: "Pinjam"
-              )
-            ],
+          child: SafeArea(
+            bottom: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Ubah Status", style: AppFontStyle.bodyMedium(context, color: black, fontWeight: FontWeight.w600),),
+                SizedBox(height: 20),
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomElevatedButtonOutline(
+                        height: 45,
+                        width: Get.width * 0.38, 
+                        title: "Kembalikan",
+                        isLoading: controller.isLoadingUpdate.value,
+                        fontColor: redPrimary,
+                        outlineColor: redPrimary,
+                        onTap: () {
+                          controller.updateAsset(id: id, status: "Tersedia");
+                        },
+                      ),
+                      CustomElevatedButton(
+                        height: 45, 
+                        width: Get.width * 0.5, 
+                        fillColor: primary,
+                        isLoading: controller.isLoadingUpdate.value,
+                        title: "Pinjam",
+                        onTap: () {
+                          controller.updateAsset(id: id, status: "Dipinjam");
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
+        );
+      }
+    );
+  }
+}
+
+class SectionFilterStatus extends GetView<HomeController> {
+  const SectionFilterStatus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final status = [
+      "Semua",
+      "Tersedia",
+      "Dipinjam",
+      "Maintenance",
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
         ),
       ),
-      body: ListView.separated(
-        padding: EdgeInsets.all(15),
-        itemCount: controller.listAssets.length,
-        separatorBuilder: (context, index) => SizedBox(height: 15),
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              controller.setSelectedAsset(controller.listAssets[index], index);
-              log(controller.selectedAsset.toString());
-              // Get.toNamed(DetailAssetView.routeName);
-            },
-            child: Obx(
-              () => Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: controller.selectedAsset.contains(controller.listAssets[index]) ? primary : Colors.transparent,
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          // padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/received.png"),
-                              fit: BoxFit.cover,
-                            ), 
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            spacing: 10,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                controller.listAssets[index].name,
-                                style: AppFontStyle.bodyMedium(
-                                  context,
-                                  color: black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "Kategori : ${controller.listAssets[index].category}",
-                                style: AppFontStyle.bodySmall(
-                                  context,
-                                  color: black,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: primaryExtraLight,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Center(
-                            child: Text(
-                              controller.listAssets[index].status == AssetStatus.available
-                                ? "Tersedia"
-                                : controller.listAssets[index].status == AssetStatus.borrowed
-                                  ? "Dipinjam"
-                                  : "Dalam Perbaikan",
-                              style: AppFontStyle.bodySmall(
-                                context,
-                                color: primaryDark,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Filter Status",
+              style: AppFontStyle.bodyMedium(
+                context,
+                color: black,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          );
-        }, 
+            const SizedBox(height: 20),
+
+            ...status.map(
+              (e) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(e),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  controller.filterStatus(e);
+                  Get.back();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
