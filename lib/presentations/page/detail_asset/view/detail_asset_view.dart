@@ -94,6 +94,7 @@ class DetailAssetView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
+          spacing: 10,
           children: [
             Container(
               width: double.infinity,
@@ -105,7 +106,45 @@ class DetailAssetView extends StatelessWidget {
                     color: Colors.grey.withOpacity(0.1),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: const Offset(0, 3), // changes position of shadow
+                    offset: const Offset(0, 3), // changes position of shadow 
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lenovo ThinkPad X1 Carbon",
+                    style: AppFontStyle.bodyLarge(
+                      context,
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 8,),
+                  Text(
+                    "Kategori : Elektronik",
+                    style: AppFontStyle.bodySmall(
+                      context,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ]
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3), // changes position of shadow 
                   ),
                 ],
                 borderRadius: BorderRadius.circular(20),
